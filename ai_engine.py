@@ -8,6 +8,8 @@
 # TODO: switch undo moves to stack data structure
 import chess_engine
 from enums import Player
+from chess_logger import logger
+
 
 
 class chess_ai:
@@ -34,14 +36,14 @@ class chess_ai:
                 return 100
 
         if depth <= 0 or csc != 3:
-            return self.evaluate_board(game_state, Player.PLAYER_1)
+            return self.evaluate_board(game_state, player_color)
 
         if maximizing_player:
             max_evaluation = -10000000
-            all_possible_moves = game_state.get_all_legal_moves("black")
+            all_possible_moves = game_state.get_all_legal_moves("white")
             for move_pair in all_possible_moves:
                 game_state.move_piece(move_pair[0], move_pair[1], True)
-                evaluation = self.minimax_white(game_state, depth - 1, alpha, beta, False, "white")
+                evaluation = self.minimax_white(game_state, depth - 1, alpha, beta, False, player_color)
                 game_state.undo_move()
 
                 if max_evaluation < evaluation:
@@ -56,10 +58,10 @@ class chess_ai:
                 return max_evaluation
         else:
             min_evaluation = 10000000
-            all_possible_moves = game_state.get_all_legal_moves("white")
+            all_possible_moves = game_state.get_all_legal_moves("black")
             for move_pair in all_possible_moves:
                 game_state.move_piece(move_pair[0], move_pair[1], True)
-                evaluation = self.minimax_white(game_state, depth - 1, alpha, beta, True, "black")
+                evaluation = self.minimax_white(game_state, depth - 1, alpha, beta, True, player_color)
                 game_state.undo_move()
 
                 if min_evaluation > evaluation:
@@ -91,14 +93,14 @@ class chess_ai:
                 return 100
 
         if depth <= 0 or csc != 3:
-            return self.evaluate_board(game_state, Player.PLAYER_2)
+            return self.evaluate_board(game_state, player_color)
 
         if maximizing_player:
             max_evaluation = -10000000
-            all_possible_moves = game_state.get_all_legal_moves("white")
+            all_possible_moves = game_state.get_all_legal_moves("black")
             for move_pair in all_possible_moves:
                 game_state.move_piece(move_pair[0], move_pair[1], True)
-                evaluation = self.minimax_black(game_state, depth - 1, alpha, beta, False, "black")
+                evaluation = self.minimax_black(game_state, depth - 1, alpha, beta, False, player_color)
                 game_state.undo_move()
 
                 if max_evaluation < evaluation:
@@ -113,10 +115,10 @@ class chess_ai:
                 return max_evaluation
         else:
             min_evaluation = 10000000
-            all_possible_moves = game_state.get_all_legal_moves("black")
+            all_possible_moves = game_state.get_all_legal_moves("white")
             for move_pair in all_possible_moves:
                 game_state.move_piece(move_pair[0], move_pair[1], True)
-                evaluation = self.minimax_black(game_state, depth - 1, alpha, beta, True, "white")
+                evaluation = self.minimax_black(game_state, depth - 1, alpha, beta, True, player_color)
                 game_state.undo_move()
 
                 if min_evaluation > evaluation:
@@ -140,57 +142,60 @@ class chess_ai:
         return evaluation_score
 
     def get_piece_value(self, piece, player):
-        if player is Player.PLAYER_1:
-            if piece.is_player("black"):
-                if piece.get_name() is "k":
-                    return -1000
-                elif piece.get_name() is "q":
-                    return -100
-                elif piece.get_name() is "r":
-                    return -50
-                elif piece.get_name() is "b":
-                    return -30
-                elif piece.get_name() is "n":
-                    return -30
-                elif piece.get_name() is "p":
-                    return -10
-            else:
-                if piece.get_name() is "k":
-                    return 1000
-                elif piece.get_name() is "q":
-                    return 100
-                elif piece.get_name() is "r":
-                    return 50
-                elif piece.get_name() is "b":
-                    return 30
-                elif piece.get_name() is "n":
-                    return 30
-                elif piece.get_name() is "p":
-                    return 10
+        if piece.is_player(player) :
+            if piece.get_name() == "k":
+                return -1000
+            elif piece.get_name() == "q":
+                return -100
+            elif piece.get_name() == "r":
+                return -50
+            elif piece.get_name() == "b":
+                return -30
+            elif piece.get_name() == "n":
+                return -30
+            elif piece.get_name() == "p":
+                return -10
         else:
-            if piece.is_player("white"):
-                if piece.get_name() is "k":
-                    return 1000
-                elif piece.get_name() is "q":
-                    return 100
-                elif piece.get_name() is "r":
-                    return 50
-                elif piece.get_name() is "b":
-                    return 30
-                elif piece.get_name() is "n":
-                    return 30
-                elif piece.get_name() is "p":
-                    return 10
+            if piece.get_name() == "k":
+                return 1000
+            elif piece.get_name() == "q":
+                return 100
+            elif piece.get_name() == "r":
+                return 50
+            elif piece.get_name() == "b":
+                return 30
+            elif piece.get_name() == "n":
+                return 30
+            elif piece.get_name() == "p":
+                return 10
             else:
-                if piece.get_name() is "k":
-                    return -1000
-                elif piece.get_name() is "q":
-                    return -100
-                elif piece.get_name() is "r":
-                    return -50
-                elif piece.get_name() is "b":
-                    return -30
-                elif piece.get_name() is "n":
-                    return -30
-                elif piece.get_name() is "p":
-                    return -10
+                if piece.is_player("white"):
+                    if piece.get_name() == "k":
+                        return 1000
+                    elif piece.get_name() == "q":
+                        return 100
+                    elif piece.get_name() == "r":
+                        return 50
+                    elif piece.get_name() == "b":
+                        return 30
+                    elif piece.get_name() == "n":
+                        return 30
+                    elif piece.get_name() == "p":
+                        return 10
+                else:
+                    if piece.get_name() == "k":
+                        return -1000
+                    elif piece.get_name() == "q":
+                        return -100
+                    elif piece.get_name() == "r":
+                        return -50
+                    elif piece.get_name() == "b":
+                        return -30
+                    elif piece.get_name() == "n":
+                        return -30
+                    elif piece.get_name() == "p":
+                        return -10
+
+
+
+
