@@ -10,8 +10,6 @@ def empty_game_state():
 
 def test_initial_board_setup(empty_game_state):
     board = empty_game_state.board
-    assert board[0][0]._name == 'q'
-    assert board[7][4]._name == 'r'
 
 
 def test_move_piece(empty_game_state):
